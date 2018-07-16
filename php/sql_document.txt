@@ -1,0 +1,50 @@
+    
+    SQL INJECTION:
+    SQL stands for Structured Query Language.
+    In this section I will show how a person might enter into your application using sql injection in your login form and how to prevent that.
+    Code for the login form is given below:
+    <?php
+mysql_connect('localhost','root','');      
+mysql_select_db('a_database');           //connecting to the database 
+           
+      if (isset($_POST['username'])&&isset($_POST['password'])){ //it checks that the username and password 
+     
+       $username= $_POST['username'];                           //are submitted or not
+       $password= $_POST['password'];
+            
+       if(!empty($username)&&!empty($password)){    //it checks that the username and password are empty or not
+       		
+    	$query="SELECT * FROM `users` WHERE `username`='$username' AND `password`='$password' "; 
+       	$query_run=mysql_query($query);    //running the query
+           if(mysql_num_rows($query_run) >=1 ){   // this will return 1 or 0
+           	 echo 'success';
+           } else{
+           	echo 'invalid';
+           }
+       	}
+     }
+?>
+<form action="sql_1.php" method="POST">
+	Username: <input type="text" name="username">
+	password: <input type="password" name="password">
+	          <input type="submit" name="click here">
+	      </form>
+
+
+	      If I run the above code in my browser it looks like
+
+	      Username:[           ]  Password [            ] [submit]
+
+	      now when the user enters the username and password the query check for the match in the database and returns the value 0 and 1 for invalid and Success respectively.
+	      But this page is insecure a person might uses a sql injection to bypass the login system.
+	       1) He can enter username = 'OR"='
+	                       password = 'OR"='
+	                          it means username = nothing OR nothing = nothing which is true so the value returned is 1 and the person successfully login to the system. 
+	                Now in order to protect ourselves from this attack a person uses the real_escape_string method
+	                he has to add the following lines to his code. The codified  part of the code is given below.
+
+	                   $query="SELECT * FROM 'users' WHERE 'username'='".mysql_real_escape_string($username)."' AND 'password'='".mysql_real_escape_string($password)."'";
+
+	                   these lines of code escape the certain characters and the value returned from the query is 0 and login is invalid.
+
+                            By this means we can prevent the sql injection.

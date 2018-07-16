@@ -1,0 +1,1 @@
+<!-- sessions are stored on the server and hidden from the user-->
